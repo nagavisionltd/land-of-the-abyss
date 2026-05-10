@@ -340,9 +340,9 @@ function drawRect(ctx, x, y, w, h, color) {
 
 // --- START SCREEN (THE ABYSS) ---
 const StartScreen = {
-    initialized: false, buildings: [], rain: [], creatures: [],
+    initialized: false, buildings: [], rain: [], creatures: [], stars: [],
     init: function() {
-        this.buildings = []; this.creatures = []; this.rain = [];
+        this.buildings = []; this.creatures = []; this.rain = []; this.stars = [];
         const cx = Game.width/2;
         for(let i=0; i<25; i++) {
             let h = 40 + Math.random() * 90;
