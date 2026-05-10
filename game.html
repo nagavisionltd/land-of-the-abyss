@@ -896,7 +896,7 @@ const Game = {
     },
     
     startLevel3: function() {
-        this.level = 3; this.levelLength = 1500; this.cameraX = 0;
+        this.level = 3; this.levelLength = 1500; this.cameraX = 0; this.cameraY = 0;
         this.entities = []; this.particles = []; this.items = [];
         this.setUnderwaterPhysics();
         this.player = new Entity(60, this.groundY - 50, 'hero'); 
@@ -980,6 +980,11 @@ const Game = {
             boss.hp = 500; boss.maxHp = 500; boss.w = 60; boss.h = 90;
             boss.phase = 1;
             boss.attackPattern = 0;
+        } else if (this.level === 5) {
+            boss = new Entity(this.cameraX + 400, this.groundY - 50, 'shadowKnight');
+            boss.hp = 600; boss.maxHp = 600; boss.w = 70; boss.h = 95;
+            boss.phase = 1;
+            boss.attackPattern = 0;
         }
         boss.side = 'enemy'; boss.isBoss = true; this.boss = boss; this.entities.push(boss);
     },
@@ -991,7 +996,7 @@ const Game = {
                 else if (this.level === 2) this.startLevel3();
                 else if (this.level === 3) this.startLevel4();
                 else if (this.level === 4) this.startLevel5();
-                else {
+                else if (this.level === 5) {
                     alert("VICTORY! THE ABYSS IS SEALED!");
                     location.reload();
                 }
@@ -1151,8 +1156,18 @@ class Entity {
                 Game.entities.push(new Projectile(this.x + (25 * this.dir), this.y, this.dir));
             }
             
-            if (this.x > Game.cameraX + 200 && !Game.boss) Game.cameraX += this.vx * 0.5;
-            if (Game.cameraX > Game.levelLength) Game.cameraX = Game.levelLength;
+            // Camera follows player smoothly in both X and Y
+            const targetCamX = this.x - 200;
+            const targetCamY = this.y - Game.height/2;
+            Game.cameraX += (targetCamX - Game.cameraX) * 0.1;
+            Game.cameraY += (targetCamY - Game.cameraY) * 0.1;
+            
+            // Clamp camera to level bounds
+            if (Game.cameraX < 0) Game.cameraX = 0;
+            if (Game.cameraX > Game.levelLength - Game.width) Game.cameraX = Game.levelLength - Game.width;
+            if (Game.cameraY < -50) Game.cameraY = -50;
+            if (Game.cameraY > 100) Game.cameraY = 100;
+            
             return;
         }
         
